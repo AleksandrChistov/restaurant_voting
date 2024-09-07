@@ -53,6 +53,7 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authz) -> authz
+                        .requestMatchers("/api/account/register").anonymous()
                         .requestMatchers("/api/account").hasRole(Role.USER.name())
                         .requestMatchers("/api/**").hasRole(Role.ADMIN.name())
                 )
