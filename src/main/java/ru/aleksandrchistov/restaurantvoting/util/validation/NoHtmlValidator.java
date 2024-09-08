@@ -1,4 +1,4 @@
-package ru.javaops.bootjava.util.validation;
+package ru.aleksandrchistov.restaurantvoting.util.validation;
 
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;

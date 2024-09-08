@@ -12,8 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.aleksandrchistov.restaurantvoting.model.Role;
 import ru.aleksandrchistov.restaurantvoting.model.User;
 import ru.aleksandrchistov.restaurantvoting.repository.UserRepository;
@@ -22,18 +20,19 @@ import ru.aleksandrchistov.restaurantvoting.web.AuthUser;
 
 import java.util.Optional;
 
+import static ru.aleksandrchistov.restaurantvoting.util.UserUtil.PASSWORD_ENCODER;
+
 @Configuration
 @EnableWebSecurity
 @Slf4j
 @AllArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    public static final PasswordEncoder PASSWORD_ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     private final UserRepository userRepository;
 
     @Autowired
     private void setMapper(ObjectMapper objectMapper) {
-        JsonUtil.setObjectMapper(objectMapper);
+        JsonUtil.setMapper(objectMapper);
     }
 
     @Override
@@ -57,9 +56,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/api/account/register").anonymous()
-                .antMatchers(HttpMethod.POST, "/api/account").anonymous()
-                .antMatchers("/api/account").hasRole(Role.USER.name())
-                .antMatchers("/api/**").hasRole(Role.ADMIN.name())
+                .antMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
+                .antMatchers(HttpMethod.POST, "/api/profile").anonymous()
+                .antMatchers("/api/**").authenticated()
                 .and().httpBasic();
     }
 }

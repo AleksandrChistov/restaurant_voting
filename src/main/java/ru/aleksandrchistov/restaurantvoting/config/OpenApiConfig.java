@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Configuration;
                         Приложение "Ресторан Голосование"
                         <p><b>Тестовые креденшелы:</b><br>
                         - user@gmail.com / password<br>
-                        - admin@aleksandrchistov.ru / admin</p>
+                        - admin@yandex.ru / admin</p>
                         """,
                 contact = @Contact(url = "https://aleksandrchistov.ru/contacts", name = "Aleksandr Chistov", email = "info@aleksandrchistov.ru")
         ),
@@ -38,7 +38,6 @@ public class OpenApiConfig {
         return GroupedOpenApi.builder()
                 .group("REST API")
                 .pathsToMatch("/api/**")
-                .pathsToExclude("/api/profile/**")
                 .build();
     }
 }

@@ -1,4 +1,4 @@
-package ru.javaops.bootjava.util.validation;
+package ru.aleksandrchistov.restaurantvoting.util.validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
