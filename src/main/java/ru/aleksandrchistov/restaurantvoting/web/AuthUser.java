@@ -1,4 +1,4 @@
-package ru.aleksandrchistov.restaurantvoting;
+package ru.aleksandrchistov.restaurantvoting.web;
 
 import lombok.Getter;
 import lombok.ToString;

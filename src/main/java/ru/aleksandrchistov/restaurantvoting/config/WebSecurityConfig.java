@@ -4,72 +4,62 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import ru.aleksandrchistov.restaurantvoting.AuthUser;
 import ru.aleksandrchistov.restaurantvoting.model.Role;
 import ru.aleksandrchistov.restaurantvoting.model.User;
 import ru.aleksandrchistov.restaurantvoting.repository.UserRepository;
 import ru.aleksandrchistov.restaurantvoting.util.JsonUtil;
+import ru.aleksandrchistov.restaurantvoting.web.AuthUser;
 
-import jakarta.annotation.PostConstruct;
 import java.util.Optional;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
 @Slf4j
 @AllArgsConstructor
-public class WebSecurityConfig {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     public static final PasswordEncoder PASSWORD_ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     private final UserRepository userRepository;
-    private final ObjectMapper objectMapper;
 
-    @PostConstruct
-    void setMapper() {
+    @Autowired
+    private void setMapper(ObjectMapper objectMapper) {
         JsonUtil.setObjectMapper(objectMapper);
     }
 
-    public UserDetailsService userDetailsService() {
-        return email -> {
-            log.debug("Authenticating '{}'", email);
-            Optional<User> optionalUser = userRepository.findByEmailIgnoreCase(email.toLowerCase());
-            return new AuthUser(optionalUser.orElseThrow(
-                    () -> new UsernameNotFoundException("User '" + email + "' was not found")));
-        };
+    @Override
+    public UserDetailsService userDetailsServiceBean() throws Exception {
+        return super.userDetailsServiceBean();
     }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService())
+        auth.userDetailsService(
+                        email -> {
+                            log.debug("Authenticating '{}'", email);
+                            Optional<User> optionalUser = userRepository.findByEmailIgnoreCase(email);
+                            return new AuthUser(optionalUser.orElseThrow(
+                                    () -> new UsernameNotFoundException("User '" + email + "' was not found")));
+                        })
                 .passwordEncoder(PASSWORD_ENCODER);
     }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/api/account/register").anonymous()
-                        .requestMatchers("/api/account").hasRole(Role.USER.name())
-                        .requestMatchers("/api/**").hasRole(Role.ADMIN.name())
-                )
-                .sessionManagement(sessionManagementCustomizer -> sessionManagementCustomizer
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .httpBasic(withDefaults());
-
-        return http.build();
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .antMatchers("/api/account/register").anonymous()
+                .antMatchers(HttpMethod.POST, "/api/account").anonymous()
+                .antMatchers("/api/account").hasRole(Role.USER.name())
+                .antMatchers("/api/**").hasRole(Role.ADMIN.name())
+                .and().httpBasic();
     }
 }

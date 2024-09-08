@@ -16,13 +16,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ru.aleksandrchistov.restaurantvoting.AuthUser;
 import ru.aleksandrchistov.restaurantvoting.model.Role;
 import ru.aleksandrchistov.restaurantvoting.model.User;
 import ru.aleksandrchistov.restaurantvoting.repository.UserRepository;
-import ru.aleksandrchistov.restaurantvoting.util.ValidationUtil;
+import ru.aleksandrchistov.restaurantvoting.util.validation.ValidationUtil;
 
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.EnumSet;
 
@@ -70,7 +69,7 @@ public class AccountController implements RepresentationModelProcessor<Repositor
         userRepository.deleteById(authUser.id());
     }
 
-    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<EntityModel<User>> register(@Valid @RequestBody User user) {
         log.info("register {}", user);
