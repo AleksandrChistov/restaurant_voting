@@ -1,16 +1,14 @@
 package ru.aleksandrchistov.restaurantvoting.util;
 
 import lombok.experimental.UtilityClass;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.aleksandrchistov.restaurantvoting.model.Role;
 import ru.aleksandrchistov.restaurantvoting.model.User;
 import ru.aleksandrchistov.restaurantvoting.to.UserTo;
 
+import static ru.aleksandrchistov.restaurantvoting.config.SecurityConfiguration.PASSWORD_ENCODER;
+
 @UtilityClass
 public class UserUtil {
-
-    public static final PasswordEncoder PASSWORD_ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     public static User createNewFromTo(UserTo userTo) {
         return new User(null, userTo.getName(), userTo.getEmail().toLowerCase(), userTo.getPassword(), Role.USER);
