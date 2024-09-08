@@ -5,9 +5,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.transaction.annotation.Transactional;
-
-import static ru.aleksandrchistov.restaurantvoting.util.validation.ValidationUtil.checkExisted;
-import static ru.aleksandrchistov.restaurantvoting.util.validation.ValidationUtil.checkModification;
+import ru.aleksandrchistov.restaurantvoting.error.NotFoundException;
 
 // https://stackoverflow.com/questions/42781264/multiple-base-repositories-in-spring-data-jpa
 @NoRepositoryBean
@@ -19,14 +17,18 @@ public interface BaseRepository<T> extends JpaRepository<T, Integer> {
     @Query("DELETE FROM #{#entityName} e WHERE e.id=:id")
     int delete(int id);
 
+    //  https://stackoverflow.com/a/60695301/548473 (existed delete code 204, not existed: 404)
+    @SuppressWarnings("all") // transaction invoked
     default void deleteExisted(int id) {
-        checkModification(delete(id), id);
+        if (delete(id) == 0) {
+            throw new NotFoundException("Entity with id=" + id + " not found");
+        }
+    }
+
+    default T getExisted(int id) {
+        return findById(id).orElseThrow(() -> new NotFoundException("Entity with id=" + id + " not found"));
     }
 
     @Query("SELECT e FROM #{#entityName} e WHERE e.id = :id")
     T get(int id);
-
-    default T getExisted(int id) {
-        return checkExisted(get(id), id);
-    }
 }

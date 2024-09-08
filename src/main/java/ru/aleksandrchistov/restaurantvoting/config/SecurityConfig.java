@@ -5,8 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,19 +27,19 @@ import java.util.Optional;
 @EnableWebSecurity
 @Slf4j
 @AllArgsConstructor
-public class SecurityConfiguration {
-
+public class SecurityConfig {
     public static final PasswordEncoder PASSWORD_ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     private final UserRepository userRepository;
+    private final RestAuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    PasswordEncoder passwordEncoder() {
         return PASSWORD_ENCODER;
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
+    UserDetailsService userDetailsService() {
         return email -> {
             log.debug("Authenticating '{}'", email);
             Optional<User> optionalUser = userRepository.findByEmailIgnoreCase(email);
@@ -45,15 +48,24 @@ public class SecurityConfiguration {
         };
     }
 
+    //  https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter#configuring-websecurity
+    //  https://stackoverflow.com/a/61147599/548473
+    @Bean
+    WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().requestMatchers("/", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**");
+    }
+
+    //https://stackoverflow.com/a/76538979/548473
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
-                .antMatchers(HttpMethod.POST, "/api/profile").anonymous()
-                .antMatchers("/api/**").authenticated()
-                .and().httpBasic()
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().csrf().disable();
+        http.securityMatcher("/api/**").authorizeHttpRequests(authz -> authz
+                        .requestMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST, "/api/profile").anonymous()
+                        .requestMatchers("/api/**").authenticated()
+                ).httpBasic(Customizer.withDefaults())
+                .sessionManagement(smc -> smc
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                ).csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
 }

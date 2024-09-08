@@ -1,13 +1,12 @@
 package ru.aleksandrchistov.restaurantvoting.to;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import ru.aleksandrchistov.restaurantvoting.HasIdAndEmail;
 import ru.aleksandrchistov.restaurantvoting.util.validation.NoHtml;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 @Value
 @EqualsAndHashCode(callSuper = true)

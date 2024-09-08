@@ -1,6 +1,11 @@
 package ru.aleksandrchistov.restaurantvoting.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,13 +16,6 @@ import org.springframework.util.CollectionUtils;
 import ru.aleksandrchistov.restaurantvoting.HasIdAndEmail;
 import ru.aleksandrchistov.restaurantvoting.util.validation.NoHtml;
 
-import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.*;
 
 @Entity
@@ -25,9 +23,8 @@ import java.util.*;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User extends NamedEntity implements HasIdAndEmail, Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class User extends NamedEntity implements HasIdAndEmail {
+// No session, no needs Serializable
 
     @Column(name = "email", nullable = false, unique = true)
     @Email
@@ -38,7 +35,7 @@ public class User extends NamedEntity implements HasIdAndEmail, Serializable {
 
     @Column(name = "password", nullable = false)
     @NotBlank
-    @Size(max = 256)
+    @Size(max = 128)
     // https://stackoverflow.com/a/12505165/548473
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
@@ -80,6 +77,10 @@ public class User extends NamedEntity implements HasIdAndEmail, Serializable {
 
     public void setRoles(Collection<Role> roles) {
         this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
+    }
+
+    public boolean hasRole(Role role) {
+        return roles != null && roles.contains(role);
     }
 
     @Override
