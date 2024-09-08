@@ -2,6 +2,7 @@ package ru.aleksandrchistov.restaurantvoting.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import ru.javaops.bootjava.util.validation.NoHtml;
 import lombok.*;
 import org.springframework.util.StringUtils;
 import ru.aleksandrchistov.restaurantvoting.util.JsonDeserializers;
@@ -32,14 +33,17 @@ public class User extends BaseEntity implements Serializable {
     @Email
     @NotBlank
     @Size(max = 128)
+    @NoHtml   // https://stackoverflow.com/questions/17480809
     private String email;
 
     @Column(name = "first_name")
     @Size(max = 128)
+    @NoHtml
     private String firstName;
 
     @Column(name = "last_name")
     @Size(max = 128)
+    @NoHtml
     private String lastName;
 
     @Column(name = "password")
