@@ -1,8 +1,10 @@
 package ru.aleksandrchistov.restaurantvoting.util;
 
+import lombok.experimental.UtilityClass;
 import ru.aleksandrchistov.restaurantvoting.error.IllegalRequestDataException;
 import ru.aleksandrchistov.restaurantvoting.model.BaseEntity;
 
+@UtilityClass
 public class ValidationUtil {
 
     public static void checkNew(BaseEntity entity) {
