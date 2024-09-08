@@ -8,7 +8,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.aleksandrchistov.restaurantvoting.util.validation.NoHtml;
+import ru.aleksandrchistov.restaurantvoting.validation.NoHtml;
 
 
 @MappedSuperclass

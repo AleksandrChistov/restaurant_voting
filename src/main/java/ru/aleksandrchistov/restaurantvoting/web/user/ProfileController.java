@@ -16,8 +16,8 @@ import ru.aleksandrchistov.restaurantvoting.web.AuthUser;
 
 import java.net.URI;
 
-import static ru.aleksandrchistov.restaurantvoting.util.validation.ValidationUtil.assureIdConsistent;
-import static ru.aleksandrchistov.restaurantvoting.util.validation.ValidationUtil.checkNew;
+import static ru.aleksandrchistov.restaurantvoting.web.RestValidation.assureIdConsistent;
+import static ru.aleksandrchistov.restaurantvoting.web.RestValidation.checkNew;
 
 @RestController
 @RequestMapping(value = ProfileController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)

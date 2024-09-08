@@ -1,11 +1,11 @@
-package ru.aleksandrchistov.restaurantvoting.util.validation;
+package ru.aleksandrchistov.restaurantvoting.web;
 
 import lombok.experimental.UtilityClass;
 import ru.aleksandrchistov.restaurantvoting.HasId;
 import ru.aleksandrchistov.restaurantvoting.error.IllegalRequestDataException;
 
 @UtilityClass
-public class ValidationUtil {
+public class RestValidation {
 
     public static void checkNew(HasId bean) {
         if (!bean.isNew()) {

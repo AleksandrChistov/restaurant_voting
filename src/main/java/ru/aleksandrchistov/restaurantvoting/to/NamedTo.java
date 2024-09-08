@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import ru.aleksandrchistov.restaurantvoting.util.validation.NoHtml;
+import ru.aleksandrchistov.restaurantvoting.validation.NoHtml;
 
 @Data
 @EqualsAndHashCode(callSuper = true)

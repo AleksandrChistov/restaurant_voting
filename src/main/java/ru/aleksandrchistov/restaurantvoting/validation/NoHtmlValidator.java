@@ -1,4 +1,4 @@
-package ru.aleksandrchistov.restaurantvoting.util.validation;
+package ru.aleksandrchistov.restaurantvoting.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
