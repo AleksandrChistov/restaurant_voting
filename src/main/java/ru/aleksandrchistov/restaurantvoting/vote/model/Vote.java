@@ -41,4 +41,14 @@ public class Vote extends BaseEntity {
         this.restaurantId = restaurantId;
 
     }
+
+    @Override
+    public String toString() {
+        return "Vote{" +
+                "id=" + id +
+                ", restaurantId=" + restaurantId +
+                ", createdAt=" + createdAt +
+                ", userId=" + userId +
+                '}';
+    }
 }

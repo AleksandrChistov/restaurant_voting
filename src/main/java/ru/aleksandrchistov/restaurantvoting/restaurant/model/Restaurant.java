@@ -35,4 +35,13 @@ public class Restaurant extends NamedEntity {
     public void setMenu(Collection<MenuItem> menu) {
         this.menu = menu.isEmpty() ? Collections.emptySet() : Set.copyOf(menu);
     }
+
+    @Override
+    public String toString() {
+        return "Restaurant{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", menu=" + menu +
+                '}';
+    }
 }

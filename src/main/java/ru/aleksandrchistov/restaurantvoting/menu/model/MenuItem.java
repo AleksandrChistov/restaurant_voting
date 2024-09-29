@@ -42,4 +42,15 @@ public class MenuItem extends NamedEntity {
         this.createdAt = createdAt;
         this.restaurantId = restaurantId;
     }
+
+    @Override
+    public String toString() {
+        return "MenuItem{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", priceInCents=" + priceInCents +
+                ", createdAt=" + createdAt +
+                ", restaurantId=" + restaurantId +
+                '}';
+    }
 }
