@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.aleksandrchistov.restaurantvoting.app.AuthUser;
 import ru.aleksandrchistov.restaurantvoting.vote.model.Vote;
@@ -27,9 +28,9 @@ public class VoteController {
 
     @PostMapping(value = REST_URL, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@Valid @RequestBody Vote vote) {
+    public void create(@Valid @RequestBody Vote vote, @AuthenticationPrincipal AuthUser authUser) {
         log.info("create: {}", vote);
-        Vote voteFound = repository.findByUserIdAndDateNow(AuthUser.authId());
+        Vote voteFound = repository.findByUserIdAndDateNow(authUser.id());
         if (voteFound == null) {
             checkNew(vote);
         } else {
@@ -40,7 +41,7 @@ public class VoteController {
     }
 
     @GetMapping(REST_URL)
-    public Vote findForToday() {
-        return repository.findByUserIdAndDateNow(AuthUser.authId());
+    public Vote findForToday(@AuthenticationPrincipal AuthUser authUser) {
+        return repository.findByUserIdAndDateNow(authUser.id());
     }
 }
