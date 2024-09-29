@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import ru.aleksandrchistov.restaurantvoting.common.validation.UniqueMailValidator;
 import ru.aleksandrchistov.restaurantvoting.user.UserTestData;
 import ru.aleksandrchistov.restaurantvoting.user.model.User;
 import ru.aleksandrchistov.restaurantvoting.user.repository.UserRepository;

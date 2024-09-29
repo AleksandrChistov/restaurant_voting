@@ -1,4 +1,4 @@
-package ru.aleksandrchistov.restaurantvoting.user.web;
+package ru.aleksandrchistov.restaurantvoting.common.validation;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;

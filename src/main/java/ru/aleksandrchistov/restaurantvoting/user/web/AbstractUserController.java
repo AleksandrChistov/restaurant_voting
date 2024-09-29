@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import ru.aleksandrchistov.restaurantvoting.common.validation.UniqueMailValidator;
 import ru.aleksandrchistov.restaurantvoting.user.model.User;
 import ru.aleksandrchistov.restaurantvoting.user.repository.UserRepository;
 

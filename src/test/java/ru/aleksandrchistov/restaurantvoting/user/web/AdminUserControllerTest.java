@@ -8,6 +8,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.aleksandrchistov.restaurantvoting.common.validation.UniqueMailValidator;
 import ru.aleksandrchistov.restaurantvoting.user.UserTestData;
 import ru.aleksandrchistov.restaurantvoting.user.model.Role;
 import ru.aleksandrchistov.restaurantvoting.user.model.User;
