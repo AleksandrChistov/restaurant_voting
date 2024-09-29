@@ -31,12 +31,11 @@ public class Vote extends BaseEntity {
     private Integer restaurantId;
 
     public Vote(Vote v) {
-        this(v.id, v.createdAt, v.userId, v.restaurantId);
+        this(v.id, v.userId, v.restaurantId);
     }
 
-    public Vote(Integer id, LocalDate createdAt, Integer userId, Integer restaurantId) {
+    public Vote(Integer id, Integer userId, Integer restaurantId) {
         super(id);
-        this.createdAt = createdAt;
         this.userId = userId;
         this.restaurantId = restaurantId;
 
