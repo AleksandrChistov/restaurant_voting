@@ -12,6 +12,8 @@ import java.util.List;
 @Transactional(readOnly = true)
 public interface MenuRepository extends BaseRepository<MenuItem> {
 
+    List<MenuItem> getAllByRestaurantId(Integer restaurantId);
+
     @Modifying
     @Transactional
     @Query(value="DELETE FROM MenuItem m WHERE m.createdAt = :somedate AND m.restaurantId = :restaurantId")

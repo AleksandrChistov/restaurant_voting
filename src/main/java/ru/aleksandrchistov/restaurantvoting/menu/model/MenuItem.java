@@ -36,7 +36,7 @@ public class MenuItem extends NamedEntity {
         this(m.id, m.name, m.priceInCents, m.restaurantId);
     }
 
-    public MenuItem(int id, String name, Long priceInCents, Integer restaurantId) {
+    public MenuItem(Integer id, String name, Long priceInCents, Integer restaurantId) {
         super(id, name);
         this.priceInCents = priceInCents;
         this.restaurantId = restaurantId;

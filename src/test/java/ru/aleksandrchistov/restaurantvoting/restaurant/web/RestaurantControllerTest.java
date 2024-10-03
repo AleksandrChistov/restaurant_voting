@@ -73,4 +73,15 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
     }
+
+    @Test
+    @WithUserDetails(value = UserTestData.ADMIN_MAIL)
+    void updateInconsistentId() throws Exception {
+        Restaurant updated = new Restaurant(2, "KFC", Collections.emptySet());
+        perform(MockMvcRequestBuilders.put(ADMIN_REST_URL + "/" + RestaurantTestData.KFC_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
 }
