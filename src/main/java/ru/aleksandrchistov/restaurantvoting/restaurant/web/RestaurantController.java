@@ -52,10 +52,31 @@ public class RestaurantController {
         repository.save(restaurant);
     }
 
-    @GetMapping(USER_REST_URL)
+    @GetMapping(ADMIN_REST_URL + "/{restaurantId}")
+    public Restaurant get(@PathVariable int restaurantId) {
+        log.info("get");
+        return repository.getExisted(restaurantId);
+    }
+
+    @DeleteMapping(ADMIN_REST_URL + "/{restaurantId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(value = "restaurants_with_menu", allEntries = true)
+    public void delete(@PathVariable int restaurantId) {
+        log.info("delete");
+        repository.deleteById(restaurantId);
+    }
+
+    @GetMapping(ADMIN_REST_URL)
+    public List<Restaurant> getAll() {
+        log.info("getAll");
+        return repository.findAll();
+    }
+
+    @GetMapping(USER_REST_URL + "/with-menu")
     @Cacheable("restaurants_with_menu")
     public List<Restaurant> getAllWithTodayMenu() {
         log.info("getAllWithMenu");
         return repository.findAllWithTodayMenu();
     }
+
 }

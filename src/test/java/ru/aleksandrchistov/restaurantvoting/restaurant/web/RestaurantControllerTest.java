@@ -17,6 +17,7 @@ import java.util.Collections;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.aleksandrchistov.restaurantvoting.restaurant.RestaurantTestData.MC_DONALDS_RESTAURANT;
 import static ru.aleksandrchistov.restaurantvoting.restaurant.web.RestaurantController.ADMIN_REST_URL;
 
 class RestaurantControllerTest extends AbstractControllerTest {
@@ -83,5 +84,13 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(updated)))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @WithUserDetails(value = UserTestData.ADMIN_MAIL)
+    void delete() throws Exception {
+        perform(MockMvcRequestBuilders.delete(ADMIN_REST_URL + "/" + RestaurantTestData.KFC_ID))
+                .andExpect(status().isNoContent());
+        RestaurantTestData.RESTAURANT_MATCHER.assertMatch(repository.findAll(), MC_DONALDS_RESTAURANT);
     }
 }
