@@ -13,12 +13,16 @@ import ru.aleksandrchistov.restaurantvoting.restaurant.model.Restaurant;
 import ru.aleksandrchistov.restaurantvoting.restaurant.repository.RestaurantRepository;
 import ru.aleksandrchistov.restaurantvoting.user.UserTestData;
 
+import java.time.LocalDate;
 import java.util.Collections;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.aleksandrchistov.restaurantvoting.restaurant.RestaurantTestData.KFC_RESTAURANT;
 import static ru.aleksandrchistov.restaurantvoting.restaurant.RestaurantTestData.MC_DONALDS_RESTAURANT;
 import static ru.aleksandrchistov.restaurantvoting.restaurant.web.RestaurantController.ADMIN_REST_URL;
+import static ru.aleksandrchistov.restaurantvoting.restaurant.web.RestaurantController.USER_REST_URL;
 
 class RestaurantControllerTest extends AbstractControllerTest {
 
@@ -92,5 +96,24 @@ class RestaurantControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.delete(ADMIN_REST_URL + "/" + RestaurantTestData.KFC_ID))
                 .andExpect(status().isNoContent());
         RestaurantTestData.RESTAURANT_MATCHER.assertMatch(repository.findAll(), MC_DONALDS_RESTAURANT);
+    }
+
+    @Test
+    @WithUserDetails(value = UserTestData.ADMIN_MAIL)
+    void getAllWithMenu() throws Exception {
+        String now = LocalDate.now().toString();
+        perform(MockMvcRequestBuilders.get(ADMIN_REST_URL + "/with-menu?startDate=" + now + "&endDate=" + now))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(RestaurantTestData.RESTAURANT_MATCHER.contentJson(KFC_RESTAURANT, MC_DONALDS_RESTAURANT));
+    }
+
+    @Test
+    @WithUserDetails(value = UserTestData.USER_MAIL)
+    void getAllWithTodayMenu() throws Exception {
+        perform(MockMvcRequestBuilders.get(USER_REST_URL + "/with-menu"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(RestaurantTestData.RESTAURANT_MATCHER.contentJson(KFC_RESTAURANT, MC_DONALDS_RESTAURANT));
     }
 }

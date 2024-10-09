@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import ru.aleksandrchistov.restaurantvoting.restaurant.model.Restaurant;
 import ru.aleksandrchistov.restaurantvoting.restaurant.repository.RestaurantRepository;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -72,11 +74,22 @@ public class RestaurantController {
         return repository.findAll();
     }
 
+    @GetMapping(ADMIN_REST_URL + "/with-menu")
+    @Cacheable("restaurants_with_menu")
+    public List<Restaurant> getAllWithMenu(
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate
+    ) {
+        log.info("getAllWithMenu");
+        return repository.findAllWithMenu(startDate, endDate);
+    }
+
     @GetMapping(USER_REST_URL + "/with-menu")
     @Cacheable("restaurants_with_menu")
     public List<Restaurant> getAllWithTodayMenu() {
-        log.info("getAllWithMenu");
-        return repository.findAllWithTodayMenu();
+        log.info("getAllWithTodayMenu");
+        return repository.findAllWithMenu(LocalDate.now(), LocalDate.now());
+
     }
 
 }
