@@ -19,7 +19,8 @@ Build a voting system for deciding where to have lunch.
 
 Each restaurant provides a new menu each day.
 
-As a result, provide a link to github repository. It should contain the code, README.md with API documentation and couple curl commands to test it (better - link to Swagger).
+As a result, provide a link to github repository. It should contain the code, README.md with API documentation and
+couple curl commands to test it (better - link to Swagger).
 
 P.S.: Make sure everything works with latest version that is on github :)
 P.P.S.: Assume that your API will be used by a frontend developer to build frontend on top of that.
@@ -27,12 +28,12 @@ P.P.S.: Assume that your API will be used by a frontend developer to build front
 **Stack**: JDK 21, Spring Boot 3.3.2, Lombok, H2, Caffeine Cache, Swagger/OpenAPI 3.0
 
 -----------------------------------------------------
-[Swagger (available after the app is launched)](http://localhost:8080/swagger-ui/index.html)  
+[Swagger (available after the app is launched)](http://localhost:8080/swagger-ui/index.html)
 
 ### Credentials
 
-| Username        | Password | Role  |
-|-----------------| -------- |-------|
-| admin@email.com | admin | ADMIN |
-| user@email.com  | password | USER | 
-| guest@gmail.com | guest | GUEST |
+| Username          | Password   | Role  |
+|-------------------|------------|-------|
+| `admin@email.com` | `admin`    | ADMIN |
+| `user@email.com`  | `password` | USER  | 
+| `guest@gmail.com` | `guest`    | GUEST |
