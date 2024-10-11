@@ -22,10 +22,4 @@ public class RestValidation {
         }
     }
 
-    public static <T> T checkExisted(T obj, int id) {
-        if (obj == null) {
-            throw new IllegalRequestDataException("Entity with id=" + id + " not found");
-        }
-        return obj;
-    }
 }

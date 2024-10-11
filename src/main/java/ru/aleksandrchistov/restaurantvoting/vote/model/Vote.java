@@ -38,7 +38,6 @@ public class Vote extends BaseEntity {
         super(id);
         this.userId = userId;
         this.restaurantId = restaurantId;
-
     }
 
     @Override

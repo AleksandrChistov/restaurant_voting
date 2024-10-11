@@ -1,19 +1,23 @@
 package ru.aleksandrchistov.restaurantvoting.vote.repository;
 
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
-import ru.aleksandrchistov.restaurantvoting.app.AuthUser;
 import ru.aleksandrchistov.restaurantvoting.common.BaseRepository;
 import ru.aleksandrchistov.restaurantvoting.vote.model.Vote;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Transactional(readOnly = true)
 public interface VoteRepository extends BaseRepository<Vote> {
-    @Query("SELECT v FROM Vote v WHERE v.userId = :userId AND v.createdAt = CURRENT_DATE")
-    Vote findByUserIdAndDateNow(Integer userId);
+    List<Vote> findByUserIdAndCreatedAt(Integer userId, LocalDate createdAt);
+
+    List<Vote> findAllByUserId(Integer userId);
+
+    List<Vote> findAllByCreatedAt(LocalDate createdAt);
 
     @Transactional
-    default void prepareAndSave(Vote vote) {
-        vote.setUserId(AuthUser.authId());
-        save(vote);
+    default Vote prepareAndSave(Vote vote, int authUserId) {
+        vote.setUserId(authUserId);
+        return save(vote);
     }
 }
