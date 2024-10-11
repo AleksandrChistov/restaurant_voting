@@ -13,9 +13,8 @@ VALUES ('KFC'),
        ('McDonald’s');
 
 INSERT INTO MENU_ITEM (name, price, restaurant_id)
-VALUES ('Gamburger', 10050, 1),
-       ('Poached eggs', 25000, 1),
-       ('Marbled Beef Steak', 83500, 2);
+VALUES ('Hamburger', 10050, null),
+       ('Poached eggs', 25000, null);
 
 INSERT INTO VOTE (user_id, restaurant_id)
 VALUES (1, 2),

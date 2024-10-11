@@ -11,6 +11,6 @@ import java.util.List;
 @Transactional(readOnly = true)
 public interface RestaurantRepository extends BaseRepository<Restaurant> {
 
-    @Query("SELECT r FROM Restaurant r LEFT JOIN FETCH r.menu m WHERE m.createdAt BETWEEN :startDate AND :endDate")
+    @Query("SELECT r FROM Restaurant r LEFT JOIN FETCH r.menu m WHERE m.addedToRestaurant BETWEEN :startDate AND :endDate")
     List<Restaurant> findAllWithMenu(LocalDate startDate, LocalDate endDate);
 }

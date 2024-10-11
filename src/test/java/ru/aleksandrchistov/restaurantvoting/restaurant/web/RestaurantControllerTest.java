@@ -8,6 +8,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.aleksandrchistov.restaurantvoting.AbstractControllerTest;
 import ru.aleksandrchistov.restaurantvoting.common.util.JsonUtil;
+import ru.aleksandrchistov.restaurantvoting.menu.model.MenuItem;
+import ru.aleksandrchistov.restaurantvoting.menu.repository.MenuRepository;
 import ru.aleksandrchistov.restaurantvoting.restaurant.RestaurantTestData;
 import ru.aleksandrchistov.restaurantvoting.restaurant.model.Restaurant;
 import ru.aleksandrchistov.restaurantvoting.restaurant.repository.RestaurantRepository;
@@ -15,12 +17,12 @@ import ru.aleksandrchistov.restaurantvoting.user.UserTestData;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.aleksandrchistov.restaurantvoting.restaurant.RestaurantTestData.KFC_RESTAURANT;
-import static ru.aleksandrchistov.restaurantvoting.restaurant.RestaurantTestData.MC_DONALDS_RESTAURANT;
+import static ru.aleksandrchistov.restaurantvoting.restaurant.RestaurantTestData.*;
 import static ru.aleksandrchistov.restaurantvoting.restaurant.web.RestaurantController.ADMIN_REST_URL;
 import static ru.aleksandrchistov.restaurantvoting.restaurant.web.RestaurantController.USER_REST_URL;
 
@@ -28,6 +30,9 @@ class RestaurantControllerTest extends AbstractControllerTest {
 
     @Autowired
     private RestaurantRepository repository;
+
+    @Autowired
+    private MenuRepository menuRepository;
 
     @Test
     @WithUserDetails(value = UserTestData.ADMIN_MAIL)
@@ -95,25 +100,46 @@ class RestaurantControllerTest extends AbstractControllerTest {
     void delete() throws Exception {
         perform(MockMvcRequestBuilders.delete(ADMIN_REST_URL + "/" + RestaurantTestData.KFC_ID))
                 .andExpect(status().isNoContent());
-        RestaurantTestData.RESTAURANT_MATCHER.assertMatch(repository.findAll(), MC_DONALDS_RESTAURANT);
+        RestaurantTestData.RESTAURANT_MATCHER.assertMatch(repository.findAll(), getMcDonalds());
     }
 
     @Test
     @WithUserDetails(value = UserTestData.ADMIN_MAIL)
-    void getAllWithMenu() throws Exception {
-        String now = LocalDate.now().toString();
-        perform(MockMvcRequestBuilders.get(ADMIN_REST_URL + "/with-menu?startDate=" + now + "&endDate=" + now))
+    void getAllWithMenuBetweenDate() throws Exception {
+        MenuItem newMenu1 = new MenuItem(null, "Coffee", 2500L, KFC_ID);
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        newMenu1.setAddedToRestaurant(yesterday);
+        MenuItem newMenu2 = new MenuItem(null, "Coffee2", 3500L, KFC_ID);
+
+        Restaurant expected = getKFC();
+        expected.setMenu(Collections.singletonList(newMenu1));
+
+        menuRepository.save(newMenu1);
+        menuRepository.save(newMenu2);
+
+        perform(MockMvcRequestBuilders.get(ADMIN_REST_URL + "/with-menu?startDate=" + yesterday + "&endDate=" + yesterday))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(RestaurantTestData.RESTAURANT_MATCHER.contentJson(KFC_RESTAURANT, MC_DONALDS_RESTAURANT));
+                .andExpect(RestaurantTestData.RESTAURANT_MATCHER.contentJson(List.of(expected)));
     }
 
     @Test
     @WithUserDetails(value = UserTestData.USER_MAIL)
     void getAllWithTodayMenu() throws Exception {
+        MenuItem newMenu1 = new MenuItem(null, "Coffee", 2500L, KFC_ID);
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        newMenu1.setAddedToRestaurant(yesterday);
+        MenuItem newMenu2 = new MenuItem(null, "Coffee2", 3500L, KFC_ID);
+
+        Restaurant expected = getKFC();
+        expected.setMenu(Collections.singletonList(newMenu2));
+
+        menuRepository.save(newMenu1);
+        menuRepository.save(newMenu2);
+
         perform(MockMvcRequestBuilders.get(USER_REST_URL + "/with-menu"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(RestaurantTestData.RESTAURANT_MATCHER.contentJson(KFC_RESTAURANT, MC_DONALDS_RESTAURANT));
+                .andExpect(RestaurantTestData.RESTAURANT_MATCHER.contentJson(List.of(expected)));
     }
 }

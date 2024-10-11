@@ -1,5 +1,6 @@
 package ru.aleksandrchistov.restaurantvoting.restaurant.web;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.aleksandrchistov.restaurantvoting.common.views.DefaultAndIgnoreView;
+import ru.aleksandrchistov.restaurantvoting.common.views.DefaultView;
 import ru.aleksandrchistov.restaurantvoting.restaurant.model.Restaurant;
 import ru.aleksandrchistov.restaurantvoting.restaurant.repository.RestaurantRepository;
 
@@ -35,6 +38,7 @@ public class RestaurantController {
 
     @PostMapping(value = ADMIN_REST_URL, consumes = MediaType.APPLICATION_JSON_VALUE)
     @CacheEvict(value = "restaurants_with_menu", allEntries = true)
+    @JsonView(DefaultView.class)
     public ResponseEntity<Restaurant> createWithLocation(@Valid @RequestBody Restaurant restaurant) {
         log.info("create {}", restaurant);
         checkNew(restaurant);
@@ -55,6 +59,7 @@ public class RestaurantController {
     }
 
     @GetMapping(ADMIN_REST_URL + "/{restaurantId}")
+    @JsonView(DefaultView.class)
     public Restaurant get(@PathVariable int restaurantId) {
         log.info("get");
         return repository.getExisted(restaurantId);
@@ -69,6 +74,7 @@ public class RestaurantController {
     }
 
     @GetMapping(ADMIN_REST_URL)
+    @JsonView(DefaultView.class)
     public List<Restaurant> getAll() {
         log.info("getAll");
         return repository.findAll();
@@ -76,7 +82,8 @@ public class RestaurantController {
 
     @GetMapping(ADMIN_REST_URL + "/with-menu")
     @Cacheable("restaurants_with_menu")
-    public List<Restaurant> getAllWithMenu(
+    @JsonView(DefaultAndIgnoreView.class)
+    public List<Restaurant> getAllWithMenuBetweenDate(
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate
     ) {
@@ -86,10 +93,10 @@ public class RestaurantController {
 
     @GetMapping(USER_REST_URL + "/with-menu")
     @Cacheable("restaurants_with_menu")
+    @JsonView(DefaultAndIgnoreView.class)
     public List<Restaurant> getAllWithTodayMenu() {
         log.info("getAllWithTodayMenu");
         return repository.findAllWithMenu(LocalDate.now(), LocalDate.now());
-
     }
 
 }

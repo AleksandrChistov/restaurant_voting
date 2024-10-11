@@ -1,9 +1,12 @@
 package ru.aleksandrchistov.restaurantvoting.restaurant.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 import ru.aleksandrchistov.restaurantvoting.common.model.NamedEntity;
+import ru.aleksandrchistov.restaurantvoting.common.views.IgnoreView;
 import ru.aleksandrchistov.restaurantvoting.menu.model.MenuItem;
 
 import java.util.Collection;
@@ -21,6 +24,8 @@ public class Restaurant extends NamedEntity {
 
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "restaurantId")
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonView(IgnoreView.class)
     private Set<MenuItem> menu = new HashSet<>();
 
     public Restaurant(Restaurant r) {
